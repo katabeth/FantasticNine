@@ -1,5 +1,6 @@
 package com.sparta.doom.fantasticninewebandapi.services;
 
+import com.sparta.doom.fantasticninewebandapi.exceptions.ResourceNotFoundException;
 import com.sparta.doom.fantasticninewebandapi.models.theater.TheaterModel;
 import com.sparta.doom.fantasticninewebandapi.repositories.TheaterRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +27,7 @@ public class TheaterService {
     public TheaterModel getTheaterByTheaterId(int theaterId) {
         Optional<TheaterModel> theater = theaterRepository.findTheaterModelByTheaterId(theaterId);
         if (!theater.isPresent()) {
-            throw new ResourceAccessException("Theater with id " + theaterId + " not found");
+            throw new ResourceNotFoundException("Theater with id " + theaterId + " not found");
         }
 
         return theater.get();
