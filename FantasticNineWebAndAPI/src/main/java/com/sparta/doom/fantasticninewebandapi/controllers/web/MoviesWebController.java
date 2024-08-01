@@ -96,20 +96,19 @@ public class MoviesWebController {
                 .block();
 
         List<CommentDoc> comments = fetchComments(movie.getId(),0);
-
         List<CommentDoc> returnComments = new ArrayList<>();
 
         for(CommentDoc comment : comments) {
             String emailAddress = comment.getEmail();
             UserDoc user = webClient.get().uri("/api/users/email/"+emailAddress)
                     .retrieve().bodyToMono(UserDoc.class).block();
-            CommentDoc commentWithId = comment;
-            commentWithId.setEmail(user.getId());
-            returnComments.add(commentWithId);
+            comment.setEmail(user.getId());
+            returnComments.add(comment);
         }
 
         model.addAttribute("comments", returnComments);
         model.addAttribute("movie", movie);
+        model.addAttribute("comment", new CommentDoc());
         return "movies/movies_details";
     }
 
@@ -147,6 +146,7 @@ public class MoviesWebController {
     }
 
     private List<CommentDoc> fetchComments(String movieId, int page) {
+
         Mono<PagedModel<CommentDoc>> commentsMono = webClient.get().uri(uriBuilder -> uriBuilder
                         .path("/api/movies/{movieId}/comments")
                         .queryParam("page", page)

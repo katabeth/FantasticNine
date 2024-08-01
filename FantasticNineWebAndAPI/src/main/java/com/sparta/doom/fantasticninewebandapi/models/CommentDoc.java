@@ -19,9 +19,7 @@ public class CommentDoc {
     @Setter
     @Getter
     @Id
-    @JsonSerialize(using = ObjectIdSerializer.class)
-    @JsonDeserialize(using = ObjectIdDeserializer.class)
-    private ObjectId id;
+    private String id;
 
     @Getter
     @Setter
@@ -40,15 +38,13 @@ public class CommentDoc {
     @Setter
     private String name;
 
-    @JsonSerialize(using = ObjectIdSerializer.class)
-    @JsonDeserialize(using = ObjectIdDeserializer.class)
     @Field("movie_id")
-    private ObjectId movieId;
+    private String movieId;
 
-    public ObjectId getMovieId() {
+    public String getMovieId() {
         return movieId;
     }
-    public void setMovieId(ObjectId movieId) {
+    public void setMovieId(String movieId) {
         this.movieId = movieId;
     }
 }

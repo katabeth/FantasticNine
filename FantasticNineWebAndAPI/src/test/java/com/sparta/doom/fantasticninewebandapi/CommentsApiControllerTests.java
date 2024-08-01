@@ -66,8 +66,8 @@ public class CommentsApiControllerTests {
         CommentDoc commentDoc = new CommentDoc();
         ObjectId movieId = new ObjectId("573a1390f29313caabcd4323");
         ObjectId commentId = new ObjectId("5a9427648b0beebeb69579e7");
-        commentDoc.setId(commentId);
-        commentDoc.setMovieId(movieId);
+        commentDoc.setId(commentId.toString());
+        commentDoc.setMovieId(movieId.toString());
         commentDoc.setEmail("test@example.com");
         commentDoc.setDate(new Date());
         commentDoc.setText("This is a test comment.");
@@ -76,7 +76,7 @@ public class CommentsApiControllerTests {
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/movies/573a1390f29313caabcd446f/comments/id/5a9427648b0beebeb69579e7"))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
-        commentsService.deleteComment(commentId);
+        commentsService.deleteComment(commentId.toString());
     }
     @Test
     void testGetCommentsByDateRange() throws Exception {
@@ -94,8 +94,8 @@ public class CommentsApiControllerTests {
         CommentDoc commentDoc = new CommentDoc();
         ObjectId movieId = new ObjectId("573a1390f29313caabcd4323");
         ObjectId commentId = new ObjectId("5a9427648b0beebeb69579e7");
-        commentDoc.setId(commentId);
-        commentDoc.setMovieId(movieId);
+        commentDoc.setId(commentId.toString());
+        commentDoc.setMovieId(movieId.toString());
         commentDoc.setEmail("test@example.com");
         commentDoc.setDate(new Date());
         commentDoc.setText("This is a test comment.");
@@ -105,7 +105,7 @@ public class CommentsApiControllerTests {
         mockMvc.perform(MockMvcRequestBuilders.get("/api/movies/573a1390f29313caabcd4323/comments/name/Mercedes-Tyler"))
                 .andExpect(MockMvcResultMatchers.content().string(Matchers.containsString("Mercedes Tyler")));
 
-        commentsService.deleteComment(commentId);
+        commentsService.deleteComment(commentId.toString());
     }
     @Test
     void testGetCommentsByMovieAndUsernameNotFound() throws Exception {
@@ -164,7 +164,7 @@ public class CommentsApiControllerTests {
 
         CommentDoc commentDoc = new CommentDoc();
         ObjectId movieId = new ObjectId("573a1390f29313caabcd4eaf");
-        commentDoc.setMovieId(movieId);
+        commentDoc.setMovieId(movieId.toString());
         commentDoc.setEmail("test@example.com");
         commentDoc.setDate(new Date());
         commentDoc.setText("This is a test comment.");
@@ -185,7 +185,7 @@ public class CommentsApiControllerTests {
     void testCreateNewCommentReturnsIsCreatedIfCorrect() throws Exception {
         CommentDoc commentDoc = new CommentDoc();
         ObjectId movieId = new ObjectId("573a1390f29313caabcd4323");
-        commentDoc.setMovieId(movieId);
+        commentDoc.setMovieId(movieId.toString());
         commentDoc.setEmail("test@example.com");
         commentDoc.setDate(new Date());
         commentDoc.setText("This is a test comment.");
@@ -209,8 +209,8 @@ public class CommentsApiControllerTests {
         CommentDoc commentDoc = new CommentDoc();
         ObjectId commentId = new ObjectId("5a9427648b0beebeb69579e8");
         ObjectId movieId = new ObjectId("573a1390f29313caabcd4323");
-        commentDoc.setMovieId(movieId);
-        commentDoc.setId(commentId);
+        commentDoc.setMovieId(movieId.toString());
+        commentDoc.setId(commentId.toString());
         commentDoc.setEmail("test@example.com");
         commentDoc.setDate(new Date());
         commentDoc.setText("This is a test comment.");
@@ -233,8 +233,8 @@ public class CommentsApiControllerTests {
         CommentDoc commentDocSetUp = new CommentDoc();
         ObjectId movieIdSetUp = new ObjectId("573a1390f29313caabcd4323");
         ObjectId commentIdSetUp = new ObjectId("5a9427648b0beebeb69579e7");
-        commentDocSetUp.setId(commentIdSetUp);
-        commentDocSetUp.setMovieId(movieIdSetUp);
+        commentDocSetUp.setId(commentIdSetUp.toString());
+        commentDocSetUp.setMovieId(movieIdSetUp.toString());
         commentDocSetUp.setEmail("test@example.com");
         commentDocSetUp.setDate(new Date());
         commentDocSetUp.setText("This is a test comment.");
@@ -244,8 +244,8 @@ public class CommentsApiControllerTests {
         CommentDoc commentDoc = new CommentDoc();
         ObjectId commentId = new ObjectId("5a9427648b0beebeb69579e7");
         ObjectId movieId = new ObjectId("573a1390f29313caabcd4323");
-        commentDoc.setMovieId(movieId);
-        commentDoc.setId(commentId);
+        commentDoc.setMovieId(movieId.toString());
+        commentDoc.setId(commentId.toString());
         commentDoc.setEmail("test@example.com");
         commentDoc.setDate(new Date());
         commentDoc.setText("This is a test comment.");
@@ -260,7 +260,7 @@ public class CommentsApiControllerTests {
                         .content(commentJson))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
-        commentsService.deleteComment(commentIdSetUp);
+        commentsService.deleteComment(commentIdSetUp.toString());
     }
 
     @Test
@@ -269,8 +269,8 @@ public class CommentsApiControllerTests {
         CommentDoc commentDocSetUp = new CommentDoc();
         ObjectId movieIdSetUp = new ObjectId("573a1390f29313caabcd4323");
         ObjectId commentIdSetUp = new ObjectId("5a9427648b0beebeb69579e7");
-        commentDocSetUp.setId(commentIdSetUp);
-        commentDocSetUp.setMovieId(movieIdSetUp);
+        commentDocSetUp.setId(commentIdSetUp.toString());
+        commentDocSetUp.setMovieId(movieIdSetUp.toString());
         commentDocSetUp.setEmail("test@example.com");
         commentDocSetUp.setDate(new Date());
         commentDocSetUp.setText("This is a test comment.");
@@ -280,8 +280,8 @@ public class CommentsApiControllerTests {
         CommentDoc commentDoc = new CommentDoc();
         ObjectId commentId = new ObjectId("5a9427648b0beebeb69579e7");
         ObjectId movieId = new ObjectId("573a1390f29313caabcd4323");
-        commentDoc.setMovieId(movieId);
-        commentDoc.setId(commentId);
+        commentDoc.setMovieId(movieId.toString());
+        commentDoc.setId(commentId.toString());
         commentDoc.setEmail("test@example.com");
         commentDoc.setDate(new Date());
         commentDoc.setText("This is a test comment.");
@@ -296,7 +296,7 @@ public class CommentsApiControllerTests {
                         .content(commentJson))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isNoContent());
-        commentsService.deleteComment(commentIdSetUp);
+        commentsService.deleteComment(commentIdSetUp.toString());
     }
 
     @Test
@@ -310,8 +310,8 @@ public class CommentsApiControllerTests {
         CommentDoc commentDocSetUp = new CommentDoc();
         ObjectId movieIdSetUp = new ObjectId("573a1390f29313caabcd4323");
         ObjectId commentIdSetUp = new ObjectId("5a9427648b0beebeb69579e7");
-        commentDocSetUp.setId(commentIdSetUp);
-        commentDocSetUp.setMovieId(movieIdSetUp);
+        commentDocSetUp.setId(commentIdSetUp.toString());
+        commentDocSetUp.setMovieId(movieIdSetUp.toString());
         commentDocSetUp.setEmail("test@example.com");
         commentDocSetUp.setDate(new Date());
         commentDocSetUp.setText("This is a test comment.");

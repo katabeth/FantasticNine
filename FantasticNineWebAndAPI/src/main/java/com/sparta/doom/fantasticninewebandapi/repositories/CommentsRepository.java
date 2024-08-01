@@ -8,8 +8,8 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface CommentsRepository extends MongoRepository<CommentDoc, ObjectId> {
+public interface CommentsRepository extends MongoRepository<CommentDoc, String> {
     Page<CommentDoc> findByNameContainingIgnoreCase(String name, Pageable pageable);
     Page<CommentDoc> findByEmailContainingIgnoreCase(String email, Pageable pageable);
-    Page<CommentDoc> findByMovieId(ObjectId movieId, Pageable pageable);
+    Page<CommentDoc> findByMovieId(String movieId, Pageable pageable);
 }

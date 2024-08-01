@@ -19,9 +19,13 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.net.URI;
+import java.text.ParsePosition;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.TimeZone;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -46,7 +50,7 @@ public class CommentsApiController {
 //    }
 
     @GetMapping("/movies/{movie}/comments")
-    public ResponseEntity<PagedModel<CommentDoc>> getCommentsPaged(@PathVariable("movie") ObjectId movieId
+    public ResponseEntity<PagedModel<CommentDoc>> getCommentsPaged(@PathVariable("movie") String movieId
             ,@RequestParam(value = "page", defaultValue = "0") int page
             ,@RequestParam(value = "size", defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page,size);
@@ -56,23 +60,19 @@ public class CommentsApiController {
     }
 
 
-    @GetMapping("/movies/{movie}/comments/id/{commentId}")
-    public ResponseEntity<EntityModel<CommentDoc>> getComment(@PathVariable("movie") ObjectId movie, @PathVariable("commentId") ObjectId commentId) {
+    @GetMapping("/comments/id/{commentId}")
+    public ResponseEntity<EntityModel<CommentDoc>> getComment(@PathVariable("commentId") String commentId) {
         CommentDoc comment = commentsService.getCommentById(commentId);
         if (comment == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        if(!comment.getMovieId().equals(movie)) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
         EntityModel<CommentDoc> commentDocEntityModel = EntityModel.of(comment
-                ,linkTo(methodOn(MoviesApiController.class).getMovieById(comment.getMovieId().toString())).withRel("movie")
-                ,linkTo(methodOn(CommentsApiController.class).getComment(comment.getMovieId(),comment.getId())).withSelfRel());
+                ,linkTo(methodOn(MoviesApiController.class).getMovieById(comment.getMovieId())).withRel("movie"));
         return new ResponseEntity<>(commentDocEntityModel, HttpStatus.OK);
     }
 
     @GetMapping("/movies/{movie}/comments/dates/{date1}/{date2}")
-    public ResponseEntity<CollectionModel<EntityModel<CommentDoc>>> getCommentsByMovieAndDate(@PathVariable("movie") ObjectId movie
+    public ResponseEntity<CollectionModel<EntityModel<CommentDoc>>> getCommentsByMovieAndDate(@PathVariable("movie") String movie
             , @PathVariable String date1, @PathVariable String date2) {
         if(date1 == null || date2 == null || LocalDate.parse(date1).isAfter(LocalDate.parse(date2)) || date1.length()!=10 || date2.length()!=10) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -88,7 +88,7 @@ public class CommentsApiController {
     }
 
     @GetMapping("/movies/{movie}/comments/name/{username}")
-    public ResponseEntity<CollectionModel<EntityModel<CommentDoc>>> getCommentsByMovieAndUsername(@PathVariable("movie") ObjectId movie, @PathVariable("username") String username) {
+    public ResponseEntity<CollectionModel<EntityModel<CommentDoc>>> getCommentsByMovieAndUsername(@PathVariable("movie") String movie, @PathVariable("username") String username) {
         List<CommentDoc> comments = commentsService.getCommentsByMovieId(movie);
         List<EntityModel<CommentDoc>> commentDocList = commentsService.getCommentsByUsernameAndMovie(username, comments).stream().map(this::commentEntityModel).toList();
 
@@ -142,17 +142,26 @@ public class CommentsApiController {
     }
 
     @PostMapping("/movies/{movie}/comments/create")
-    public ResponseEntity<EntityModel<CommentDoc>> createComment(@RequestHeader(name = "DOOM-API-KEY") String key,@PathVariable("movie") ObjectId movieId, @RequestBody CommentDoc newComment) {
-        if(!newComment.getMovieId().toString().equals(movieId.toString())){
+    public ResponseEntity<EntityModel<CommentDoc>> createComment(@PathVariable("movie") String movieId, @RequestBody CommentDoc newComment) {
+        if(!newComment.getMovieId().equals(movieId)){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        commentsService.createComment(newComment);
+
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+        formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
+        String formattedDate = formatter.format(new Date());
+        Date date = formatter.parse(formattedDate, new ParsePosition(0));
+        newComment.setDate(date);
+
+        CommentDoc returnComment = commentsService.createComment(newComment);
+        if(returnComment == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
         URI location = URI.create("/api/movies/" + movieId + "/comments/id/" + newComment.getId());
-        Link selfLink = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(CommentsApiController.class).getComment(movieId,newComment.getId())).withSelfRel();
-        return ResponseEntity.created(location).body(EntityModel.of(newComment).add(selfLink));
+        return ResponseEntity.created(location).body(EntityModel.of(newComment));
     }
     @PutMapping("/movies/{movie}/comments/id/{commentId}")
-    public ResponseEntity<CommentDoc> updateComment(@RequestHeader(name = "DOOM-API-KEY") String key,@PathVariable("movie") ObjectId movieId, @PathVariable("commentId") ObjectId commentId, @RequestBody CommentDoc newComment) {
+    public ResponseEntity<CommentDoc> updateComment(@RequestHeader(name = "DOOM-API-KEY") String key,@PathVariable("movie") String movieId, @PathVariable("commentId") String commentId, @RequestBody CommentDoc newComment) {
 
         CommentDoc oldComment = commentsService.getCommentById(commentId);
         if(oldComment == null){
@@ -164,8 +173,8 @@ public class CommentsApiController {
         commentsService.updateComment(newComment);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-    @DeleteMapping("/movies/{movie}/comments/id/{commentId}")
-    public ResponseEntity<CommentDoc> deleteComment(@RequestHeader(name = "DOOM-API-KEY") String key, @PathVariable("commentId") ObjectId commentId) {
+    @DeleteMapping("/comments/id/{commentId}")
+    public ResponseEntity<CommentDoc> deleteComment(@RequestHeader(name = "DOOM-API-KEY") String key, @PathVariable("commentId") String commentId) {
         CommentDoc comment = commentsService.getCommentById(commentId);
         if(comment == null){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -176,7 +185,7 @@ public class CommentsApiController {
     private EntityModel<CommentDoc> commentEntityModel(CommentDoc comment) {
         Link movieLink = WebMvcLinkBuilder.linkTo(methodOn(MoviesApiController.class).getMovieById(comment.getMovieId().toString())).withRel("movie");
 //        Link userLink = WebMvcLinkBuilder.linkTo(methodOn(UsersController.class).getUserByEmail(comment.getEmail())).withRel("user");
-        Link selfLink = WebMvcLinkBuilder.linkTo(methodOn(CommentsApiController.class).getComment(comment.getMovieId(),comment.getId())).withSelfRel();
-        return EntityModel.of(comment, /*userLink,*/ movieLink, selfLink);
+//        Link selfLink = WebMvcLinkBuilder.linkTo(methodOn(CommentsApiController.class).getComment(comment.getMovieId(),comment.getId())).withSelfRel();
+        return EntityModel.of(comment, /*userLink,*/ movieLink /*selfLink*/);
     }
 }

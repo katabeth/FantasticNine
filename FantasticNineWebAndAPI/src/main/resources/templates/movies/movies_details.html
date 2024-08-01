@@ -59,17 +59,36 @@
         </div>
     </div>
 </div>
+
+<div sec:authorize="hasRole('ROLE_ADMIN')||hasRole('ROLE_USER')" class="container mt-5">
+    <h2 class="text-center text-white">Leave a Comment</h2>
+    <form th:object="${comment}" th:action="@{/comment/new}" method="post" class="mb-5">
+        <input type="hidden" id="movieId" name="movieId" th:value="${movie.id}">
+        <input type="hidden" id="email" name="email" th:value="${#authentication.name}">
+        <div class="form-group">
+            <label for="comment" class="text-white">Comment</label>
+            <textarea th:field="*{text}" class="form-control" id="comment" name="comment" rows="3" placeholder="Enter your comment"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</div>
+
 <div class="comments-wrapper" style="background: black;">
     <div class="container comments-container">
         <h2 class="text-center">Latest Comments</h2>
-        <div th:each="comment : ${comments}" class="comment">
-            <p th:text="${comment.getText()}">Sample comment content</p>
+        <div th:each="comment2 : ${comments}" class="comment">
+            <p th:text="${comment2.getText()}">Sample comment content</p>
             <small class="text-muted">
-                <a th:href="@{/user/{id}(id=${comment.getEmail()})}" th:text="${comment.getName()}">Username</a>
+                <a th:href="@{/user/{id}(id=${comment2.getEmail()})}" th:text="${comment2.getName()}">Username</a>
             </small>
             <div>
-                <small class="text-muted" th:text="${comment.getDate()}">Comment Date</small>
+                <small class="text-muted" th:text="${comment2.getDate()}">Comment Date</small>
             </div>
+            <form sec:authorize="hasRole('ROLE_ADMIN')" th:action="@{/comment/delete}" method="post">
+                <input type="hidden" name="commentId" th:value="${comment2.getId()}">
+                <input type="hidden" name="movieId" th:value="${movie.id}">
+                <button type="submit" class="btn btn-danger">Delete</button>
+            </form>
         </div>
     </div>
 </div>

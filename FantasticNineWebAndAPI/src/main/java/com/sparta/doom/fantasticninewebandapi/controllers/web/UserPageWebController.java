@@ -6,6 +6,9 @@ import com.sparta.doom.fantasticninewebandapi.models.UserDoc;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.hateoas.PagedModel;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,7 +33,16 @@ public class UserPageWebController {
     @GetMapping("/my_account")
     public String userPage(Model model)
     {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetails details = (UserDetails) authentication.getPrincipal();
+        String email = details.getUsername();
 
+        UserDoc user = webClient.get().uri(uriBuilder ->
+                uriBuilder.path("/api/users/email/{email}").build(email))
+                .retrieve()
+                .bodyToMono(UserDoc.class)
+                .block();
+        model.addAttribute("user", user);
         return "users/my_account";
     }
 
@@ -41,7 +53,7 @@ public class UserPageWebController {
 
     @GetMapping("/user/{userId}")
     public String userPage(@PathVariable("userId") String userId, Model model) {
-        UserDoc user = webClient.get().uri("/api/users/{userId}", userId).retrieve().bodyToMono(UserDoc.class).block();
+        UserDoc user = webClient.get().uri("/api/users/{id}", userId).retrieve().bodyToMono(UserDoc.class).block();
         int pageToGet = 0;
         List<CommentDoc> commentDocList = fetchComments(user.getEmail(),pageToGet);
         List<CommentDoc> withMovieTitle = new ArrayList<>();
