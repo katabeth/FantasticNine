@@ -38,7 +38,6 @@ public class SchedulesApiController {
         logger.info("getting Schedule Stream from service layer in controller");
         CollectionModel<EntityModel<ScheduleDoc>> scheduleModel = getCollectionModelOf(schedulesService.getSchedules(page, size));
 
-
         return scheduleModel.add(linkTo(methodOn(SchedulesApiController.class).getSchedules(page, size)).withSelfRel());
     }
 
@@ -106,7 +105,7 @@ public class SchedulesApiController {
         CollectionModel<EntityModel<ScheduleDoc>> scheduleModel = schedules.map(this::mapScheduleHateoas).collect(Collectors.collectingAndThen(Collectors.toList(), CollectionModel::of));
 
         if (scheduleModel.getContent().isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+            throw new NoSuchElementException("No schedules found");
         }
         return scheduleModel;
     }
