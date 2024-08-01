@@ -134,7 +134,8 @@ public class ScheduleWebController {
         if (errors.hasErrors()) {
             throw new IllegalArgumentException("Invalid schedule: " + errors);
         } else {
-            ScheduleDoc newSchedule = webClient.post()
+            ScheduleDoc newSchedule = webClient
+                    .post()
                     .uri("api/schedules")
                     .header(AUTH_HEADER, "Bearer " + jwtToken)
                     .bodyValue(schedule)
@@ -146,7 +147,7 @@ public class ScheduleWebController {
         }
     }
 
-    @PostMapping("/schedules/update/{id}/")
+    @PostMapping("/schedules/update/{id}")
     public String updateSchedule(@PathVariable String id, @RequestBody ScheduleDoc schedule, Model model, Errors errors, @CookieValue(name = "jwt", required = false) String jwtToken) {
         if (errors.hasErrors()) {
             throw new IllegalArgumentException("Invalid schedule: " + errors);
@@ -162,7 +163,7 @@ public class ScheduleWebController {
         }
     }
 
-    @PostMapping("/schedules/delete/{id}/")
+    @PostMapping("/schedules/delete/{id}")
     public String deleteSchedule(@PathVariable String id, @CookieValue(name = "jwt", required = false) String jwtToken) {
         webClient
                 .delete()
