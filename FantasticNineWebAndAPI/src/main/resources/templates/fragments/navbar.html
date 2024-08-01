@@ -1,19 +1,19 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top" xmlns:sec="http://www.thymeleaf.org" >
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top" xmlns:sec="http://www.thymeleaf.org">
     <a class="navbar-brand" href="/home">Doomflix</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse bar-push" id="navbarNav">
         <form class="form-inline my-2 my-lg-0 ml-lg-3" th:action="@{/movies/search}" method="get">
-            <input class="form-control mr-sm-2" type="search" placeholder="Search movies" aria-label="Search" name="query">
+            <input class="form-control mr-sm-2" type="search" placeholder="Search movies" aria-label="Search" name="query" autocomplete="off">
             <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
         </form>
         <ul class="navbar-nav ml-auto">
             <li class="nav-item">
-                <a class="nav-link" href="#movies">Movies</a>
+                <a class="nav-link" href="/movies">Movies</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#theatres">Theatres</a>
+                <a class="nav-link" href="/theaters">Theatres</a>
             </li>
             <li class="nav-item" sec:authorize="hasRole('ROLE_USER') || hasRole('ROLE_ADMIN')">
                 <a class="nav-link" th:href="@{/my_account}">My Account</a>
@@ -28,12 +28,35 @@
                 </a>
             </li>
             <li class="nav-item" sec:authorize="hasRole('ROLE_USER') || hasRole('ROLE_ADMIN')">
-                <a class="nav-link" th:href="@{/logout}">Logout</a>
+                <a class="nav-link" id="logoutButton" th:href="@{/logout}">Logout</a>
             </li>
-            <li class ="nav-item" sec:authorize="!hasRole('ROLE_USER') and !hasRole('ROLE_ADMIN')">
+            <li class="nav-item" sec:authorize="!hasRole('ROLE_USER') and !hasRole('ROLE_ADMIN')">
                 <a class="nav-link" data-toggle="modal" data-target="#loginModal">Log in</a>
             </li>
         </ul>
     </div>
 </nav>
 <div th:replace="~{fragments/login/login}"></div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var logoutButton = document.getElementById('logoutButton');
+        if (logoutButton) {
+            logoutButton.addEventListener('click', function(event) {
+                event.preventDefault(); // Prevent default link behavior
+                fetch('/logout', {
+                    method: 'GET'
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            window.location.reload();
+                        } else {
+                            console.error('Logout failed');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Network error:', error);
+                    });
+            });
+        }
+    });
+</script>

@@ -3,6 +3,7 @@ import java.util.Arrays;
 
 public class MovieDetailsDTO {
     private String id;
+    private String title;
     private Integer runtime;
     private String released;
     private String year;
@@ -15,13 +16,13 @@ public class MovieDetailsDTO {
     private String[] directors;
     private String lastupdated;
 
-
-    public MovieDetailsDTO() {
-    }
-
-    public MovieDetailsDTO(String id, String[] cast, String[] countries, String[] directors, String fullplot, String plot, String rated, String released, Integer runtime, String[] writers, String year, String lastupdated) {
+    public MovieDetailsDTO(String id, String title, String[] cast, String[] countries,
+                           String[] directors, String fullplot, String plot,
+                           String rated, String released, Integer runtime,
+                           String[] writers, String year, String lastupdated) {
         this.id = id;
 
+        this.title = title;
         this.runtime = runtime;
         this.released = released;
         this.year = year;
@@ -36,6 +37,14 @@ public class MovieDetailsDTO {
         this.directors = directors;
 
         this.lastupdated = lastupdated;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getId() {
@@ -134,21 +143,4 @@ public class MovieDetailsDTO {
         this.lastupdated = lastupdated;
     }
 
-    @Override
-    public String toString() {
-        return "MoveDetailsDTO{" +
-                "id='" + id + '\'' +
-                ", runtime=" + runtime +
-                ", released='" + released + '\'' +
-                ", year='" + year + '\'' +
-                ", rated='" + rated + '\'' +
-                ", plot='" + plot + '\'' +
-                ", fullplot='" + fullplot + '\'' +
-                ", countries=" + Arrays.toString(countries) +
-                ", cast=" + Arrays.toString(cast) +
-                ", writers=" + Arrays.toString(writers) +
-                ", directors=" + Arrays.toString(directors) +
-                ", lastupdated='" + lastupdated + '\'' +
-                '}';
-    }
 }

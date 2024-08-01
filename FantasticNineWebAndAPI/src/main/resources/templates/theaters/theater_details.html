@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Theater Details</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet"><link rel="stylesheet" th:href="@{/css/navbarStyles.css}">
+    <link rel="stylesheet" th:href="@{/css/modalStyles.css}">
+    <link rel="stylesheet" th:href="@{/css/footerStyles.css}">
+    <style>
+        body {
+            background-color: #121212;
+            color: #ffffff;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #333333;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            color: #ffffff;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .details {
+            margin-top: 20px;
+        }
+
+        .detail-item {
+            margin-bottom: 10px;
+        }
+
+        .detail-title {
+            font-weight: bold;
+            color: #cccccc;
+        }
+
+        .location-map {
+            width: 100%;
+            height: 400px;
+            margin-top: 20px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        a.back-link {
+            color: #e50914;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+
+        a.back-link:hover {
+            text-decoration: underline;
+        }
+
+        .buttons {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 5px;
+            color: #ffffff;
+            background-color: #e50914;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: bold;
+            border: none;
+        }
+
+        .button.delete {
+            background-color: #f44336;
+        }
+
+        .button:hover {
+            opacity: 0.9;
+        }
+
+        .button:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.5);
+        }
+    </style>
+</head>
+<body>
+<nav th:replace="~{fragments/navbar}"></nav>
+
+<div class="container">
+    <h1>Theater Details</h1>
+
+    <div class="details">
+        <div class="detail-item">
+            <span class="detail-title">Theater ID:</span>
+            <span th:text="${theater.theaterId}"></span>
+        </div>
+
+        <div class="detail-item">
+            <span class="detail-title">Address:</span>
+            <span th:text="${theater.location.address.street1}"></span>,
+            <span th:text="${theater.location.address.city}"></span>,
+            <span th:text="${theater.location.address.state}"></span>
+            <span th:text="${theater.location.address.zipcode}"></span>
+        </div>
+
+        <div class="detail-item">
+            <span class="detail-title">Geo Coordinates:</span>
+            <span th:text="'Latitude: ' + ${theater.location.geo.coordinates[1]} + ', Longitude: ' + ${theater.location.geo.coordinates[0]}"></span>
+        </div>
+    </div>
+
+    <div class="location-map">
+        <iframe th:src="'https://maps.google.com/maps?q=' + ${theater.location.geo.coordinates[1]} + ',' + ${theater.location.geo.coordinates[0]} + '&z=15&output=embed'"
+                width="100%" height="100%" frameborder="0" style="border:0;" allowfullscreen=""
+                aria-hidden="false" tabindex="0"></iframe>
+    </div>
+
+    <div class="buttons">
+        <a class="button" th:href="@{/theaters/edit/{id}(id=${theater.theaterId})}">Update</a>
+        <form th:action="@{/theaters/delete/{id}(id=${theater.theaterId})}" method="post" style="display:inline;">
+            <input type="hidden" name="_method" value="delete"/>
+            <button type="submit" class="button delete">Delete</button>
+        </form>
+    </div>
+
+    <a class="back-link" th:href="@{/theaters}">Back to Theaters</a>
+</div>
+
+<footer th:replace="~{fragments/footer}"></footer>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Theaters - Doomflix</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/footerStyles.css}">
+    <link rel="stylesheet" th:href="@{/css/modalStyles.css}">
+    <link rel="stylesheet" th:href="@{/css/navbarStyles.css}">
+    <style>
+        body {
+            background-color: #121212;
+            color: #ffffff;
+        }
+
+        .navbar {
+            text-transform: uppercase;
+        }
+
+        .navbar-brand {
+            font-size: 1.5rem;
+        }
+
+        .nav-link {
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            color: #ffffff;
+        }
+
+        .nav-link:hover {
+            color: #e50914;
+        }
+
+        .container {
+            margin-top: 20px;
+        }
+
+        .create-button {
+            display: inline-block;
+            margin-bottom: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            color: #ffffff;
+            background-color: #e50914;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+
+        .create-button:hover {
+            background-color: #b20710;
+            color: #ffffff;
+        }
+
+        .theater-card {
+            border: 1px solid #444444;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            background-color: #333333;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            margin-bottom: 20px;
+            color: #ffffff;
+        }
+
+        .theater-card:hover {
+            background-color: #444444;
+            transform: translateY(-5px);
+        }
+
+        .theater-card h2 {
+            margin-top: 0;
+            font-size: 1.5rem;
+            color: #ffffff;
+        }
+
+        .theater-card p {
+            margin: 8px 0;
+            color: #cccccc;
+        }
+
+        .theater-card a {
+            color: #e50914;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .theater-card a:hover {
+            text-decoration: underline;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .pagination a {
+            margin: 0 5px;
+            padding: 10px 20px;
+            text-decoration: none;
+            color: #e50914;
+            border: 1px solid #444444;
+            border-radius: 5px;
+        }
+
+        .pagination a.disabled {
+            color: #666666;
+            border: 1px solid #666666;
+            cursor: not-allowed;
+        }
+
+        .pagination a:hover:not(.disabled) {
+            background-color: #333333;
+        }
+
+        .pagination .current-page {
+            margin: 0 5px;
+            padding: 10px 20px;
+            border: 1px solid #444444;
+            border-radius: 5px;
+            background-color: #333333;
+        }
+    </style>
+</head>
+<body>
+<nav th:replace="~{fragments/navbar}"></nav>
+
+<div class="container">
+    <a class="create-button" sec:authorize="hasRole('ROLE_ADMIN')" href="/theaters/create">Create New Theater</a>
+
+    <form action="/theaters/cities" method="get" class="mb-4">
+        <div class="form-group">
+            <label for="cityName">Search by City:</label>
+            <input type="text" name="cityName" id="cityName" class="form-control" placeholder="Enter city name">
+        </div>
+        <button type="submit" class="btn btn-danger">Search</button>
+    </form>
+
+    <div class="row">
+        <div class="col-md-4" th:each="theater : ${theaters}">
+            <div class="theater-card">
+                <h2 th:text="${theater.location.address.city} + ' Theater'"></h2>
+                <p>
+                    <span th:text="${theater.location.address.street1}"></span>,
+                    <span th:text="${theater.location.address.city}"></span>,
+                    <span th:text="${theater.location.address.state}"></span>
+                    <span th:text="${theater.location.address.zipcode}"></span>
+                </p>
+                <a th:href="@{/theaters/{theaterId}(theaterId=${theater.theaterId})}">View Details</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="pagination">
+        <a th:if="${currentPage > 0}" th:href="@{/theaters(page=${currentPage - 1})}">&laquo; Previous</a>
+        <a th:if="${currentPage == 0}" class="disabled">&laquo; Previous</a>
+
+        <span class="current-page" th:text="'Page ' + (${currentPage + 1}) + ' of ' + ${totalPages}"></span>
+
+        <a th:if="${currentPage < totalPages - 1}" th:href="@{/theaters(page=${currentPage + 1})}">Next &raquo;</a>
+        <a th:if="${currentPage == totalPages - 1}" class="disabled">Next &raquo;</a>
+    </div>
+</div>
+
+<footer th:replace="~{fragments/footer}"></footer>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

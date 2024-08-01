@@ -4,7 +4,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "geo")
 public class Geo {
-    private String type;
+    private String type = "Point";
     private double[] coordinates;
 
     // Getters and Setters

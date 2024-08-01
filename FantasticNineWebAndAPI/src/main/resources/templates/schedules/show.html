@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Showings</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/landingStyles.css}">
+    <link rel="stylesheet" th:href="@{/css/navbarStyles.css}">
+    <link rel="stylesheet" th:href="@{/css/movieCardStyles.css}">
+    <link rel="stylesheet" th:href="@{/css/footerStyles.css}">
+</head>
+<body>
+<nav th:replace="~{fragments/navbar}"></nav>
+<!--For searchType = movie-->
+<!--A table with each theatre and showing time-->
+<div class="container my-5">
+    <div class="row">
+        <div class="col-12">
+            <h1 style="width: fit-content; margin: auto;" th:text="'Showing show times by: '+${searchType}">Schedules!</h1>
+            <br>
+        </div>
+    </div>
+    <div id="schedules-carousel" class="carousel slide" data-ride="carousel" data-interval="false" th:if="${(searchType == 'theater') || (searchType == 'schedule')||(searchType == 'movies')}">
+        <div class="carousel-inner">
+            <div th:each="chunk, iterStat : ${schedules}" th:class="${iterStat.index == 0} ? 'carousel-item active' : 'carousel-item'">
+                <div class="carousel-container">
+                    <div th:if="${searchType} == 'movie'">
+                        <div th:each="showings : ${chunk}" class="carousel-card">
+                            <a th:href="@{/theaters/{id}(id=${showings.theater.id})}">
+                                <div class="card" th:style="|background-image: url('${showings.movie.poster}'); background-size: cover; background-position: center;|"
+                                     th:if="${showings.movie.getPoster() != null}">
+                                    <div class="card-body">
+                                        <h5 class="card-title" th:text="${showings.theater.location.address.city}">Theater City</h5>
+                                        <p class="card-text" th:text="${#temporals.format(showings.startTime, 'HH:mm, dd-MMM')}">Show Time</p>
+                                    </div>
+                                </div>
+                                <div class="card" th:unless="${showings.movie.getPoster() != null}">
+                                    <div class="card-body">
+                                        <h5 class="card-title" th:text="${showings.theater.location.address.city}">Theater City</h5>
+                                        <p class="card-text" th:text="${#temporals.format(showings.startTime, 'HH:mm, dd-MMM')}">Show Time</p>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                    <div th:if="${(searchType == 'theater') || (searchType == 'schedule')}">
+                        <div th:each="showings : ${chunk}" class="carousel-card">
+                            <a th:href="@{/movies/{id}(id=${showings.movie.id})}">
+                                <div class="card" th:style="|background-image: url('${showings.movie.poster}'); background-size: cover; background-position: center;|"
+                                     th:if="${showings.movie.getPoster() != null}">
+                                    <div class="card-body">
+                                        <h5 class="card-title" th:text="${showings.movie.title}">Movie Title</h5>
+                                        <p class="card-text" th:text="${#temporals.format(showings.startTime, 'HH:mm, dd-MMM-yy')}">Show Time</p>
+                                    </div>
+                                </div>
+                                <div class="card" th:unless="${showings.movie.getPoster() != null}">
+                                    <div class="card-body">
+                                        <h5 class="card-title" th:text="${showings.movie.title}">Movie Title</h5>
+                                        <p class="card-text" th:text="${#temporals.format(showings.startTime, 'HH:mm, dd-MMM-yy')}">Show Time</p>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <a class="carousel-control-prev" href="#schedules-carousel" role="button" data-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="sr-only">Previous</span>
+        </a>
+        <a class="carousel-control-next" href="#schedules-carousel" role="button" data-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="sr-only">Next</span>
+        </a>
+    </div>
+<!--For searchType = theater-->
+<!--List each film next to its (multiple) show times-->
+
+
+<!--    For searchType = schedule-->
+<!--Show singular schedule-->
+<!--For searchType = all-->
+<!--List all schedules in a table-->
+    <div class="table-responsive" th:if="${searchType} == 'all'">
+        <h2>Showing All Schedules</h2>
+        <table class = "table table-bordered table-striped">
+            <thead class="table-dark">
+            <tr>
+                <th>Movie</th>
+                <th>Theater</th>
+                <th>Show Time</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="showing : ${schedules}">
+                <td th:text="${showing.movie.title}"></td>
+                <td th:text="${showing.theater.location.address.city}"></td>
+                <td class="card-text" th:text="${#temporals.format(showing.startTime, 'HH:mm, dd-MMM-yy')}"></td>
+            </tr>
+            </tbody>
+        </table>
+
+    </div>
+</div>
+<footer th:replace="~{fragments/footer}"></footer>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

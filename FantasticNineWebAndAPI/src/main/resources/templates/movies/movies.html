@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Movies!</title>
@@ -12,7 +12,7 @@
 
 </head>
 
-<body>
+<body style="background: #121212">
 
 <nav th:replace="~{fragments/navbar}"></nav>
 
@@ -44,6 +44,33 @@
                     </div>
                 </div>
             </a>
+        </div>
+    </div>
+    <div class="row mt-4" th:if="${search == false}">
+        <div class="col-4" ></div>
+        <div class="col-4">
+            <nav>
+                <ul class="pagination justify-content-center">
+                    <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                        <a class="btn btn-dark" th:href="@{/movies/pages(page=${currentPage - 1}, size=${pageSize})}" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    <li class="page-item active">
+                        <a class="btn btn-dark" href="#">
+                            <span th:text="${currentPage + 1}">1</span>
+                        </a>
+                    </li>
+                    <li class="page-item" th:classappend="${currentPage >= totalPages - 1} ? 'disabled'">
+                        <a class="btn btn-dark" th:href="@{/movies/pages(page=${currentPage + 1}, size=${pageSize})}" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+        <div class="col-4" sec:authorize="hasRole('ROLE_ADMIN')">
+            <a class="btn btn-dark float-right" th:href="@{/movies/create}" type="button">Add</a>
         </div>
     </div>
 </div>

@@ -10,10 +10,15 @@
     <link rel="stylesheet" th:href="@{/css/movieCardStyles.css}">
     <link rel="stylesheet" th:href="@{/css/footerStyles.css}">
     <link rel="stylesheet" th:href="@{/css/userPageStyles.css}">
+    <link rel="stylesheet" th:href="@{/css/modalStyles.css}">
 </head>
-<body style="background: black">
+<body style="background: black;">
+
 <nav th:replace="~{fragments/navbar}"></nav>
-<div class="d-flex container justify-content-center m-auto">
+
+<div style="background: black;">
+
+<div class="d-flex container justify-content-center m-auto" style="background: black;">
     <div class="card" id="details-card-img" th:style="|background-image: url('${movie.poster}'); background-size: cover; background-position: center;|"
          th:if="${movie.getPoster() != null}">
     </div>
@@ -22,18 +27,33 @@
         <div class="card-body">
             <h5 class="card-title" th:text="${movie.getTitle()}">Movie Title</h5>
             <p class="card-text" th:text="${movie.getYear()}"></p>
-            <p class="card-text" th:text="${movie.getFullplot()}"></p>
+            <p class="card-text" th:text="${movie.getPlot()}"></p>
             <p class="card-text" th:text="'Runtime: ' + ${movie.getRuntime()}"></p>
-            <p class="card-text" th:text="'Directors: ' + ${movie.getDirectors()}"></p>
-            <p class="card-text" th:text="'Actors: ' + ${movie.getCast()}"></p>
-            <p class="card-text" th:text="'Writers: ' + ${movie.getWriters()}"></p>
+            <div class="d-flex card-text flex-wrap">
+                <p class="card-text mr-1 ml-1">Directors:</p>
+                <p class="card-text" th:each="director : ${movie.getDirectors()}" th:text="${director}"></p>
+            </div>
+            <div class="d-flex card-text flex-wrap">
+                <p class="card-text mr-1 ml-1">Actors:</p>
+                <p class="card-text" th:each="actor : ${movie.getCast()}" th:text="${actor}"></p>
+            </div>
+            <div class="d-flex card-text flex-wrap">
+                <p class="card-text mr-1 ml-1">Writers:</p>
+                <p class="card-text" th:each="writer : ${movie.getWriters()}" th:text="${writer}" style="width: fit-content;"></p>
+            </div>
             <p class="card-text" th:text="'Genres: ' + ${movie.getGenres()}"></p>
-            <p class="card-text" th:text="'Awwards: ' + ${movie.getAwards()}"></p>
+            <p class="card-text" th:text="'Awards: ' + ${movie.getAwards().split(', ')[2]}"></p>
             <p class="card-text" th:text="'IMDB Rating: ' + ${movie.getImdb().split(' ')[1].substring(0, 3)} + '/10'"></p>
             <p class="card-text" th:text="'Rated: ' + ${movie.getRated()}"></p>
             <p class="card-text" th:text="'Tomatoes: ' + ${movie.getTomatoes()}"></p>
-            <p class="card-text" th:text="'Countries: ' + ${movie.getCountries()}"></p>
-            <p class="card-text" th:text="'Languages: ' + ${movie.getLanguages()}"></p>
+            <div class="d-flex card-text flex-wrap">
+                <p class="card-text mr-1 ml-1">Countries:</p>
+                <p class="card-text" th:each="country : ${movie.getCountries()}" th:text="${country}"></p>
+            </div>
+            <div class="d-flex card-text flex-wrap">
+                <p class="card-text mr-1 ml-1">Languages:</p>
+                <p class="card-text" th:each="language : ${movie.getLanguages()}" th:text="${language}"></p>
+            </div>
             <p class="card-text" th:text="'Released: ' + ${movie.getReleased()}"></p>
             <p class="card-text" th:text="'Type: ' + ${movie.getType()}"></p>
         </div>
@@ -53,7 +73,7 @@
     </form>
 </div>
 
-<div class="comments-wrapper">
+<div class="comments-wrapper" style="background: black;">
     <div class="container comments-container">
         <h2 class="text-center">Latest Comments</h2>
         <div th:each="comment2 : ${comments}" class="comment">
@@ -72,5 +92,9 @@
         </div>
     </div>
 </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>

@@ -1,0 +1,18 @@
+body {
+    background-color: #121212;
+    /*color: #ffffff;*/
+}
+
+.table-custom {
+    max-width: 80vw;
+}
+
+.table-custom th, .table-custom td {
+    padding: 0;
+    border: none;
+    color: white;
+}
+.table-custom td:first-child {
+    white-space: nowrap;
+    width: 1%;
+}
