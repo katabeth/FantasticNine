@@ -80,7 +80,7 @@
                 <div class="card-body text-center">
                     <img src="/images/blank-profile.jpg" alt="Profile Picture" id="profile-picture">
                     <h5 class="card-title">Username: JohnDoe</h5>
-                    <p class="card-text">Email: johndoe@example.com</p>
+                    <p class="card-text" th:text="${#authentication.name}">Email: johndoe@example.com</p>
                     <p class="card-text">Followers: 1234</p>
                     <div class="separator"></div>
                     <h6>Random Followers:</h6>
