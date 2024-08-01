@@ -52,12 +52,13 @@ public class ScheduleWebController {
             //schedules by theater id
             List<List<ScheduleDoc>> returnSchedules = new ArrayList<>();
             for (int i = 0; i < 10; i++) {
-                List<ScheduleDoc> schedules = webClient
-                        .get()
-                        .uri("api/theaters/"+id+"/schedules?page="+i)
-                        .retrieve()
-                        .bodyToMono(new ParameterizedTypeReference<CollectionModel<EntityModel<ScheduleDoc>>>() {})
-                        .block()
+                List<ScheduleDoc> schedules = Objects.requireNonNull(webClient
+                                .get()
+                                .uri("api/theaters/" + id + "/schedules?page=" + i)
+                                .retrieve()
+                                .bodyToMono(new ParameterizedTypeReference<CollectionModel<EntityModel<ScheduleDoc>>>() {
+                                })
+                                .block())
                         .getContent()
                         .stream()
                         .map(EntityModel::getContent)
@@ -72,12 +73,13 @@ public class ScheduleWebController {
             //schedules by movie id
             List<List<ScheduleDoc>> returnSchedules = new ArrayList<>();
             for (int i = 0; i < 10; i++) {
-                List<ScheduleDoc> schedules = webClient
-                        .get()
-                        .uri("api/movies/"+id+"/schedules?page="+i)
-                        .retrieve()
-                        .bodyToMono(new ParameterizedTypeReference<CollectionModel<EntityModel<ScheduleDoc>>>() {})
-                        .block()
+                List<ScheduleDoc> schedules = Objects.requireNonNull(webClient
+                                .get()
+                                .uri("api/movies/" + id + "/schedules?page=" + i)
+                                .retrieve()
+                                .bodyToMono(new ParameterizedTypeReference<CollectionModel<EntityModel<ScheduleDoc>>>() {
+                                })
+                                .block())
                         .getContent()
                         .stream()
                         .map(EntityModel::getContent)
@@ -90,24 +92,26 @@ public class ScheduleWebController {
             model.addAttribute("schedules", returnSchedules);
         } else if (Objects.equals(searchType, "schedule")) {
             //Schedules id
-            List<ScheduleDoc> schedules = webClient
-                    .get()
-                    .uri("api/schedules/" + id)
-                    .retrieve()
-                    .bodyToMono(new ParameterizedTypeReference<CollectionModel<EntityModel<ScheduleDoc>>>() {})
-                    .block()
+            List<ScheduleDoc> schedules = Objects.requireNonNull(webClient
+                            .get()
+                            .uri("api/schedules/" + id)
+                            .retrieve()
+                            .bodyToMono(new ParameterizedTypeReference<CollectionModel<EntityModel<ScheduleDoc>>>() {
+                            })
+                            .block())
                     .getContent()
                     .stream()
                     .map(EntityModel::getContent)
                     .toList();
             model.addAttribute("schedules",schedules);
         } else if (Objects.equals(searchType, "all")) {
-            List<ScheduleDoc> schedules = webClient
-                    .get()
-                    .uri("api/schedules")
-                    .retrieve()
-                    .bodyToMono(new ParameterizedTypeReference<CollectionModel<EntityModel<ScheduleDoc>>>() {})
-                    .block()
+            List<ScheduleDoc> schedules = Objects.requireNonNull(webClient
+                            .get()
+                            .uri("api/schedules")
+                            .retrieve()
+                            .bodyToMono(new ParameterizedTypeReference<CollectionModel<EntityModel<ScheduleDoc>>>() {
+                            })
+                            .block())
                     .getContent()
                     .stream()
                     .map(EntityModel::getContent)
@@ -118,23 +122,27 @@ public class ScheduleWebController {
         return "schedules/show";
     }
 
-    @GetMapping("/schedules/create/")
+    @GetMapping("/schedules/create")
     public String createSchedule(Model model) {
         model.addAttribute("schedule", new ScheduleDoc());
         // add any other needed attributes
         return "schedules/create";
     }
 
-    @PostMapping("/schedules/create/")
-    public String createSchedule(@Valid @ModelAttribute ScheduleDoc schedule, Errors errors, @CookieValue(name = "jwt", required = false) String jwtToken) {
+    @PostMapping("/schedules/create")
+    public String createSchedule(@ModelAttribute ScheduleDoc schedule, Errors errors, @CookieValue(name = "jwt", required = false) String jwtToken) {
         if (errors.hasErrors()) {
             throw new IllegalArgumentException("Invalid schedule: " + errors);
         } else {
-            webClient.post()
-                    .uri("api/schedules/")
+            ScheduleDoc newSchedule = webClient.post()
+                    .uri("api/schedules")
                     .header(AUTH_HEADER, "Bearer " + jwtToken)
-                    .bodyValue(schedule);
-            return "redirect:/schedules/schedule/" + schedule.getId() + "/";
+                    .bodyValue(schedule)
+                    .retrieve()
+                    .bodyToMono(ScheduleDoc.class)
+                    .block();
+            assert newSchedule != null;
+            return "redirect:/schedules?searchType=schedule&id=" + newSchedule.getId();
         }
     }
 
