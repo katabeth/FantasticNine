@@ -63,8 +63,8 @@ public class SecurityConfig {
                         .requestMatchers("/api/**").permitAll()
 
                         // Web
-                        .requestMatchers("/movies/**", "/theaters/**", "/users/**").permitAll()
-                        .requestMatchers("/movies/create/", "/theaters/create/", "/users/create/").hasRole("ADMIN")
+                        .requestMatchers("/movies/**", "/theaters/**", "/users/**", "/schedules/**").permitAll()
+                        .requestMatchers("/movies/create/", "/theaters/create/", "/users/create/", "/schedules/create").hasRole("ADMIN")
                         .requestMatchers("/movies/{id}/", "/theaters/{id}/", "/users/{id}/").hasRole("ADMIN")
                         .requestMatchers("/movies/{id}/comments/create/").hasAnyRole("USER", "ADMIN")
                         .requestMatchers("/movies/{id}/comments/{id}/").hasAnyRole("USER", "ADMIN")
