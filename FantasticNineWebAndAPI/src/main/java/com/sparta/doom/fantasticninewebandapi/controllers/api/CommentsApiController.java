@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.net.URI;
+import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.Date;
@@ -153,9 +154,13 @@ public class CommentsApiController {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
         formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
         String formattedDate = formatter.format(new Date());
-        newComment.setDate(new Date(Long.parseLong(formattedDate)));
+        Date date = formatter.parse(formattedDate, new ParsePosition(0));
+        newComment.setDate(date);
 
-        commentsService.createComment(newComment);
+        CommentDoc returnComment = commentsService.createComment(newComment);
+        if(returnComment == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
         URI location = URI.create("/api/movies/" + movieId + "/comments/id/" + newComment.getId());
         Link selfLink = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(CommentsApiController.class).getComment(movieId,newComment.getId())).withSelfRel();
         return ResponseEntity.created(location).body(EntityModel.of(newComment).add(selfLink));

@@ -43,8 +43,8 @@
 <div sec:authorize="hasRole('ROLE_ADMIN')||hasRole('ROLE_USER')" class="container mt-5">
     <h2 class="text-center text-white">Leave a Comment</h2>
     <form th:object="${comment}" th:action="@{/comment/new}" method="post" class="mb-5">
-        <input type="hidden" th:field="*{movieId}" th:value="${movie.id}">
-        <input type="hidden" th:field="*{email}" th:value="${#authentication.name}">
+        <input type="hidden" id="movieId" name="movieId" th:value="${movie.id}">
+        <input type="hidden" id="email" name="email" th:value="${#authentication.name}">
         <div class="form-group">
             <label for="comment" class="text-white">Comment</label>
             <textarea th:field="*{text}" class="form-control" id="comment" name="comment" rows="3" placeholder="Enter your comment"></textarea>
