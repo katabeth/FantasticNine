@@ -60,25 +60,22 @@ public class AuthController {
 
     @GetMapping("/logout")
     public void logout(HttpServletRequest request, HttpServletResponse response) {
-        // Invalidate the session
         request.getSession().invalidate();
 
-        // Remove the authentication cookie
         var cookies = request.getCookies();
         if (cookies != null) {
             for (var cookie : cookies) {
                 if ("jwt".equals(cookie.getName())) {
                     cookie.setValue(null);
-                    cookie.setPath("/"); // Make sure to set the same path as the original cookie
-                    cookie.setMaxAge(0); // Set cookie age to 0 to delete it
+                    cookie.setPath("/");
+                    cookie.setMaxAge(0);
                     response.addCookie(cookie);
                     break;
                 }
             }
         }
 
-        // Redirect or return a response to indicate the user has logged out
-        // e.g., response.sendRedirect("/login");
+        response.setStatus(HttpServletResponse.SC_OK);
     }
 
     public static class AuthRequest {

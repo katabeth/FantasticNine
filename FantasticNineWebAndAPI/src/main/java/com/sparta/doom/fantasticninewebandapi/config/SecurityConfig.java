@@ -78,8 +78,7 @@ public class SecurityConfig {
                 .logout(logout -> logout
                         .logoutUrl("/logout")
                         .invalidateHttpSession(true)
-                        .deleteCookies("jwt") // Specify cookies to delete
-                        .logoutSuccessUrl("/login") // Redirect after logout;
+                        .deleteCookies("jwt")
                         .permitAll()
                 );
         http.addFilterBefore(tokenRequestFilter, UsernamePasswordAuthenticationFilter.class);

@@ -28,7 +28,7 @@
                 </a>
             </li>
             <li class="nav-item" sec:authorize="hasRole('ROLE_USER') || hasRole('ROLE_ADMIN')">
-                <a class="nav-link" th:href="@{/logout}">Logout</a>
+                <a class="nav-link" id="logoutButton" th:href="@{/logout}">Logout</a>
             </li>
             <li class ="nav-item" sec:authorize="!hasRole('ROLE_USER') and !hasRole('ROLE_ADMIN')">
                 <a class="nav-link" data-toggle="modal" data-target="#loginModal">Log in</a>
@@ -37,3 +37,22 @@
     </div>
 </nav>
 <div th:replace="~{fragments/login/login}"></div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('logoutButton').addEventListener('click', function() {
+            fetch('/logout', {
+                method: 'GET'
+            })
+                .then(response => {
+                    if (response.ok) {
+                        window.location.reload();
+                    } else {
+                        console.error('Logout failed');
+                    }
+                })
+                .catch(error => {
+                    console.error('Network error:', error);
+                });
+        });
+    });
+</script>
