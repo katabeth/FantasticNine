@@ -63,12 +63,12 @@
         }
     </style>
 </head>
-<body>
+<body >
 <nav th:replace="~{fragments/navbar}"></nav>
 
 <header class="jumbotron jumbotron-fluid bg-dark text-white text-center header-background">
     <div class="container">
-        <h1 class="display-4">Account Name</h1>
+        <h1 th:text="*{user.name}" class="display-4">Account Name</h1>
         <p class="lead">My profile</p>
     </div>
 </header>
@@ -79,7 +79,7 @@
             <div class="card">
                 <div class="card-body text-center">
                     <img src="/images/blank-profile.jpg" alt="Profile Picture" id="profile-picture">
-                    <h5 class="card-title">Username: JohnDoe</h5>
+                    <h5 class="card-title" th:text="*{user.name}">Username: JohnDoe</h5>
                     <p class="card-text" th:text="${#authentication.name}">Email: johndoe@example.com</p>
                     <p class="card-text">Followers: 1234</p>
                     <div class="separator"></div>

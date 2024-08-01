@@ -56,14 +56,19 @@
 <div class="comments-wrapper">
     <div class="container comments-container">
         <h2 class="text-center">Latest Comments</h2>
-        <div th:each="comment : ${comments}" class="comment">
-            <p th:text="${comment.getText()}">Sample comment content</p>
+        <div th:each="comment2 : ${comments}" class="comment">
+            <p th:text="${comment2.getText()}">Sample comment content</p>
             <small class="text-muted">
-                <a th:href="@{/user/{id}(id=${comment.getEmail()})}" th:text="${comment.getName()}">Username</a>
+                <a th:href="@{/user/{id}(id=${comment2.getEmail()})}" th:text="${comment2.getName()}">Username</a>
             </small>
             <div>
-                <small class="text-muted" th:text="${comment.getDate()}">Comment Date</small>
+                <small class="text-muted" th:text="${comment2.getDate()}">Comment Date</small>
             </div>
+            <form sec:authorize="hasRole('ROLE_ADMIN')" th:action="@{/comment/delete}" method="post">
+                <input type="hidden" name="commentId" th:value="${comment2.getId()}">
+                <input type="hidden" name="movieId" th:value="${movie.id}">
+                <button type="submit" class="btn btn-danger">Delete</button>
+            </form>
         </div>
     </div>
 </div>
