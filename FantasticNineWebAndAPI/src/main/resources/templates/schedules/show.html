@@ -14,14 +14,9 @@
 <nav th:replace="~{fragments/navbar}"></nav>
 <!--For searchType = movie-->
 <!--A table with each theatre and showing time-->
-<div class="container my-5">
-    <div class="row">
-        <div class="col-12">
-            <h1 style="width: fit-content; margin: auto;" th:text="'Showing show times by: '+${searchType}">Schedules!</h1>
-            <br>
-        </div>
-    </div>
-    <div id="schedules-carousel" class="carousel slide" data-ride="carousel" data-interval="false" th:if="${(searchType == 'theater') || (searchType == 'schedule')||(searchType == 'movies')}">
+<section id="schedules-search" class="container my-5" th:unless="${searchType} == 'all'">
+    <h2 class="text-center mb-4" th:text="'Showing show times by: '+${searchType}">Schedules!</h2>
+    <div id="schedules-carousel" class="carousel slide" data-ride="carousel" data-interval="false">
         <div class="carousel-inner">
             <div th:each="chunk, iterStat : ${schedules}" th:class="${iterStat.index == 0} ? 'carousel-item active' : 'carousel-item'">
                 <div class="carousel-container">
@@ -75,6 +70,7 @@
             <span class="sr-only">Next</span>
         </a>
     </div>
+</section>
 <!--For searchType = theater-->
 <!--List each film next to its (multiple) show times-->
 
@@ -83,27 +79,43 @@
 <!--Show singular schedule-->
 <!--For searchType = all-->
 <!--List all schedules in a table-->
-    <div class="table-responsive" th:if="${searchType} == 'all'">
-        <h2>Showing All Schedules</h2>
-        <table class = "table table-bordered table-striped">
-            <thead class="table-dark">
-            <tr>
-                <th>Movie</th>
-                <th>Theater</th>
-                <th>Show Time</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="showing : ${schedules}">
-                <td th:text="${showing.movie.title}"></td>
-                <td th:text="${showing.theater.location.address.city}"></td>
-                <td class="card-text" th:text="${#temporals.format(showing.startTime, 'HH:mm, dd-MMM-yy')}"></td>
-            </tr>
-            </tbody>
-        </table>
-
+<section th:if="${searchType} == 'all'" class="container my-5">
+    <h2 class="text-center mb-4">Showing All Schedules</h2>
+    <div id ="schedules-table" class="carousel slide" data-ride="carousel" data-interval="false">
+            <div th:each="chunk, iterStat : ${schedules}" th:class="${iterStat.index == 0} ? 'carousel-item active' : 'carousel-item'">
+                <table class = "table table-bordered table-striped">
+                    <thead class="table-dark">
+                    <tr>
+                        <th>Movie</th>
+                        <th>Theater</th>
+                        <th>Show Time</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="showing : ${chunk}">
+                        <td class="card-title" th:text="${showing.movie.title}"></td>
+                        <td class="card-title" th:text="${showing.theater.location.address.city}"></td>
+                        <td class="card-text" th:text="${#temporals.format(showing.startTime, 'HH:mm, dd-MMM-yy')}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+    <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center">
+            <li class="page-item disabled">
+                <a class="page-link" type ="button" th:id="${iterStat.index}-1">Previous</a>
+            </li>
+            <li class="page-item"><a class="page-link" type ="button" th:id="${iterStat.index}==1">1</a></li>
+            <li class="page-item"><a class="page-link" type ="button" th:id="${iterStat.index}==2">2</a></li>
+            <li class="page-item"><a class="page-link" type ="button" th:id="${iterStat.index}==3">3</a></li>
+            <li class="page-item">
+                <a class="page-link" type ="button" th:id="${iterStat.index}+1">Next</a>
+            </li>
+        </ul>
+    </nav>
     </div>
 </div>
+</section>
+
 <footer th:replace="~{fragments/footer}"></footer>
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>

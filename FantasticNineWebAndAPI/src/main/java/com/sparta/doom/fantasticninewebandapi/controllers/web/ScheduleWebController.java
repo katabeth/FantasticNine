@@ -105,18 +105,25 @@ public class ScheduleWebController {
                     .toList();
             model.addAttribute("schedules",schedules);
         } else if (Objects.equals(searchType, "all")) {
-            List<ScheduleDoc> schedules = Objects.requireNonNull(webClient
-                            .get()
-                            .uri("api/schedules")
-                            .retrieve()
-                            .bodyToMono(new ParameterizedTypeReference<CollectionModel<EntityModel<ScheduleDoc>>>() {
-                            })
-                            .block())
-                    .getContent()
-                    .stream()
-                    .map(EntityModel::getContent)
-                    .toList();
-            model.addAttribute("schedules", schedules);
+            List<List<ScheduleDoc>> returnSchedules = new ArrayList<>();
+            for (int i = 0; i < 10; i++) {
+                List<ScheduleDoc> schedules = Objects.requireNonNull(webClient
+                                .get()
+                                .uri("api/schedules?page=" + i)
+                                .retrieve()
+                                .bodyToMono(new ParameterizedTypeReference<CollectionModel<EntityModel<ScheduleDoc>>>() {
+                                })
+                                .block())
+                        .getContent()
+                        .stream()
+                        .map(EntityModel::getContent)
+                        .toList();
+                returnSchedules.add(schedules);
+                if (schedules.size() < 10) {
+                    break;
+                }
+                model.addAttribute("schedules", returnSchedules);
+            }
         }
         model.addAttribute("searchType", searchType);
         return "schedules/show";
