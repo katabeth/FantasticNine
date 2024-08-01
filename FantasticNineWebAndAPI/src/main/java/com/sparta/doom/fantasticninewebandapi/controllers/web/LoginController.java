@@ -9,4 +9,9 @@ public class LoginController {
     public String login() {
         return "fragments/login/login";
     }
+
+    @GetMapping("/logout")
+    public String logout() {
+        return "home";
+    }
 }

@@ -124,6 +124,7 @@ public class MoviesWebController {
 
         model.addAttribute("comments", returnComments);
         model.addAttribute("movie", movie);
+        model.addAttribute("comment", new CommentDoc());
         return "movies/movies_details";
     }
 

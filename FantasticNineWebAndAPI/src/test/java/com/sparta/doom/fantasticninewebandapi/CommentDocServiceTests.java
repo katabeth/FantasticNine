@@ -47,31 +47,31 @@ public class CommentDocServiceTests {
         id = new ObjectId();
         movieId1 = new ObjectId();
         commentOne = new CommentDoc();
-        commentOne.setId(id);
+        commentOne.setId(id.toString());
         calendar.set(2001,Calendar.JANUARY,1,0,0,0);
         commentOne.setDate(calendar.getTime());
         commentOne.setEmail("test@test.com");
-        commentOne.setMovieId(movieId1);
+        commentOne.setMovieId(movieId1.toString());
         commentOne.setText("This is some sample text");
         commentOne.setName("Testing Account");
 
         movieId2 = new ObjectId();
         id2 = new ObjectId();
         commentTwo = new CommentDoc();
-        commentTwo.setId(id2);
+        commentTwo.setId(id2.toString());
         calendar.set(2002,Calendar.JANUARY,1,0,0,0);
         commentTwo.setDate(calendar.getTime());
         commentTwo.setEmail("test2@test2.com");
-        commentTwo.setMovieId(movieId2);
+        commentTwo.setMovieId(movieId2.toString());
         commentTwo.setText("This is some sample text again");
         commentTwo.setName("Testing Account2");
 
         commentThree = new CommentDoc();
-        commentThree.setId(id);
+        commentThree.setId(id.toString());
         calendar.set(2001,Calendar.JANUARY,1,0,0,0);
         commentThree.setDate(calendar.getTime());
         commentThree.setEmail("test@test.com");
-        commentThree.setMovieId(movieId1);
+        commentThree.setMovieId(movieId1.toString());
         commentThree.setText("This is some sample text that has been changed");
         commentThree.setName("Testing Account");
 
@@ -98,8 +98,8 @@ public class CommentDocServiceTests {
     @Test
     public void findCommentById(){
         CommentDoc expected = commentOne;
-        when(commentsRepository.findById(id)).thenReturn(Optional.of(commentOne));
-        CommentDoc actual = service.getCommentById(id);
+        when(commentsRepository.findById(id.toString())).thenReturn(Optional.of(commentOne));
+        CommentDoc actual = service.getCommentById(id.toString());
         Assertions.assertEquals(expected, actual);
     }
 //    @Test
@@ -157,20 +157,20 @@ public class CommentDocServiceTests {
         List<CommentDoc> commentList = new ArrayList<>();
         commentList.add(commentOne);
         commentList.add(commentTwo);
-        when(commentsRepository.existsById(id)).thenReturn(true);
-        when(commentsRepository.findById(id)).thenReturn(Optional.of(commentThree));
+        when(commentsRepository.existsById(id.toString())).thenReturn(true);
+        when(commentsRepository.findById(id.toString())).thenReturn(Optional.of(commentThree));
         when(commentsRepository.findAll()).thenReturn(commentList);
         when(commentsRepository.save(commentOne)).thenReturn(commentThree);
         String expected = "This is some sample text that has been changed";
         service.updateComment(commentThree);
-        CommentDoc updated = service.getCommentById(id);
+        CommentDoc updated = service.getCommentById(id.toString());
         String actual = updated.getText();
         Assertions.assertEquals(expected, actual);
     }
 
     @Test
     public void deleteComment(){
-        when(commentsRepository.existsById(id)).thenReturn(true);
+        when(commentsRepository.existsById(id.toString())).thenReturn(true);
         service.deleteComment(commentOne.getId());
         verify(commentsRepository, times(1)).deleteById(commentOne.getId());
     }
@@ -184,7 +184,7 @@ public class CommentDocServiceTests {
     @Test
     public void createNewComment(){
         CommentDoc comment = new CommentDoc();
-        comment.setId(new ObjectId());
+        comment.setId(new ObjectId().toString());
         comment.setText("This is some sample text that has been created");
         when(commentsRepository.save(comment)).thenReturn(comment);
         CommentDoc newCreatedComment = service.createComment(comment);

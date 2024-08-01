@@ -33,7 +33,7 @@ public class CommentsService {
         return commentsRepository.findAll();
     }
 
-    public CommentDoc getCommentById(ObjectId id) {
+    public CommentDoc getCommentById(String id) {
         return commentsRepository.findById(id).orElse(null);
         //orElseThrow(()-> new CommentNotFoundException("comment not found with id: " + id));
     }
@@ -58,7 +58,7 @@ public class CommentsService {
         return commentDocList;
     }
 
-    public Page<CommentDoc> getCommentsByMovie(ObjectId movieId, Pageable pageable) {
+    public Page<CommentDoc> getCommentsByMovie(String movieId, Pageable pageable) {
         return commentsRepository.findByMovieId(movieId,pageable);
     }
 
@@ -74,7 +74,7 @@ public class CommentsService {
         return commentDocList;
     }
 
-    public List<CommentDoc> getCommentsByMovieId(ObjectId id){
+    public List<CommentDoc> getCommentsByMovieId(String id){
         List<CommentDoc> commentDocList = new ArrayList<>();
         for(CommentDoc comment : commentsRepository.findAll()){
             if (comment.getMovieId().equals(id)){
@@ -109,7 +109,7 @@ public class CommentsService {
 
     }
 
-    public void deleteComment(ObjectId id) {
+    public void deleteComment(String id) {
         if(commentsRepository.existsById(id)){
             commentsRepository.deleteById(id);
         }
