@@ -121,11 +121,11 @@ public class MoviesWebController {
     @PostMapping("/create")
     public String createMoviePost(@ModelAttribute MovieDoc movieDoc, Model model) {
         webClient.post()
-                .uri("/api/movies/create")
+                .uri("/api/movies")
                 .header("DOOM-API-KEY", key)
                 .bodyValue(movieDoc);
         model.addAttribute("movie", movieDoc);
-        return "redirect:/movies/" + movieDoc.getId();
+        return "redirect:/movies";
     }
 
     @PostMapping("/update/{id}")
