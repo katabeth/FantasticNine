@@ -4,6 +4,10 @@ import com.sparta.doom.fantasticninewebandapi.models.CommentDoc;
 import com.sparta.doom.fantasticninewebandapi.models.MovieDoc;
 import com.sparta.doom.fantasticninewebandapi.models.UserDoc;
 import com.sparta.doom.fantasticninewebandapi.security.api.JwtUtils;
+import com.sparta.doom.fantasticninewebandapi.security.api.TokenRequestFilter;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -17,16 +21,16 @@ import org.springframework.web.reactive.function.client.WebClient;
 @Controller
 public class CommentsWebController {
 
-    private final JwtUtils jwtUtils;
+
+
     @Value("${jwt.auth}")
-    private String AUTH_HEADER; // top of file
+    private String AUTH_HEADER;
 
     private WebClient webClient;
 
     @Autowired
-    public CommentsWebController(WebClient webClient, JwtUtils jwtUtils) {
+    public CommentsWebController(WebClient webClient) {
         this.webClient = webClient;
-        this.jwtUtils = jwtUtils;
     }
 
     @PostMapping("/comment/new")
@@ -47,12 +51,23 @@ public class CommentsWebController {
     }
     @PostMapping("/comment/delete")
     public String deleteComment(@RequestParam String commentId, @RequestParam String movieId) {
+
         webClient.delete().uri(uriBuilder -> uriBuilder
-                        .path("api/comments/id/{commentId}")
+                        .path("/api/comments/id/{commentId}")
                         .build(commentId))
-                .header(AUTH_HEADER)
                 .retrieve()
                 .bodyToMono(Void.class).block();
         return "redirect:/movies/"+movieId;
+    }
+
+    private String getJwtFromCookies(HttpServletRequest request) {
+        if (request.getCookies() != null) {
+            for (Cookie cookie : request.getCookies()) {
+                if (AUTH_HEADER.equals(cookie.getName())) {
+                    return cookie.getValue();
+                }
+            }
+        }
+        return null;
     }
 }
