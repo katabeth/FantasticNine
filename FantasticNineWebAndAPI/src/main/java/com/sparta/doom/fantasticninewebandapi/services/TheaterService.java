@@ -9,6 +9,7 @@ import org.springframework.web.client.ResourceAccessException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class TheaterService {
@@ -34,8 +35,18 @@ public class TheaterService {
     }
 
     public List<TheaterDoc> getTheatersByCityName(String cityName) {
-        List<TheaterDoc> theaters = theaterRepository.getTheaterDocsByLocation_Address_City(cityName);
-        return theaters;
+        String formattedCityName = capitalizeEachWord(cityName);
+        return theaterRepository.getTheaterDocsByLocation_Address_City(formattedCityName);
+    }
+
+    private String capitalizeEachWord(String cityName) {
+        if (cityName == null || cityName.isEmpty()) {
+            return cityName;
+        }
+
+        return java.util.Arrays.stream(cityName.split(" "))
+                .map(word -> word.substring(0, 1).toUpperCase() + word.substring(1).toLowerCase())
+                .collect(Collectors.joining(" "));
     }
 
     public void deleteTheaterByTheaterId(int theaterId) {
@@ -46,8 +57,15 @@ public class TheaterService {
     }
 
     public void createTheater(TheaterDoc theaterDoc) {
-        System.out.println(theaterDoc.getTheaterId());
-        theaterRepository.save(theaterDoc);
+        System.out.println("Attempting to save theater with ID: " + theaterDoc.getTheaterId());
+        try {
+            theaterRepository.save(theaterDoc);
+            System.out.println("Theater saved successfully!");
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println("Error saving theater: " + e.getMessage());
+            throw new RuntimeException("Failed to save theater", e);
+        }
     }
 
     public TheaterDoc updateTheater(TheaterDoc theaterDoc) {

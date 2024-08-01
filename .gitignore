@@ -52,3 +52,5 @@ out/
 
 # VS Code
 .vscode
+
+*.properties
