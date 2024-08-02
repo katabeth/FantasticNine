@@ -158,8 +158,13 @@ public class TheatersWebController {
         return "theaters/theater_update";
     }
 
-    @PostMapping("/update")
-    public String updateTheater(@ModelAttribute TheaterDoc theater, @CookieValue(name = "jwt", required = false) String jwtToken) {
+    @PostMapping("/update/{id}")
+    public String updateTheater(
+            @PathVariable Integer id,
+            @ModelAttribute TheaterDoc theater,
+            @CookieValue(name = "jwt", required = false) String jwtToken
+    ) {
+        theater.setTheaterId(id);
         webClient
                 .put()
                 .uri("/api/theaters")

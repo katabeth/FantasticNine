@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <title>Create Theater</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet"><style>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+    <style>
         body {
             background-color: #121212;
             color: #ffffff;
@@ -83,6 +84,12 @@
 
     <form action="/theaters/create" method="post" id="createTheaterForm">
 
+        <h2>Theater Details</h2>
+        <div class="form-group">
+            <label for="theaterId">Theater ID:</label>
+            <input type="number" id="theaterId" name="theaterId" class="form-control" required/>
+        </div>
+
         <h2>Location Details</h2>
 
         <h3>Address</h3>
@@ -123,5 +130,18 @@
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const cityInput = document.getElementById("addressCity");
+
+        cityInput.addEventListener("input", function() {
+            const currentValue = cityInput.value;
+            const capitalizedValue = currentValue.charAt(0).toUpperCase() + currentValue.slice(1);
+            cityInput.value = capitalizedValue;
+        });
+    });
+</script>
+
 </body>
 </html>

@@ -6,9 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -48,40 +45,19 @@ public class TheaterApiController {
 
     @DeleteMapping("/theaters/{theaterId}")
     public ResponseEntity<HttpStatus> deleteTheaterByTheaterId(@PathVariable Integer theaterId) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        UserDetails userDetails = (UserDetails) auth.getPrincipal();
-
-        if (userDetails.getAuthorities().stream().anyMatch(authority -> authority.getAuthority().equals("ROLE_ADMIN"))) {
-            theaterService.deleteTheaterByTheaterId(theaterId);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } else {
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        }
+        theaterService.deleteTheaterByTheaterId(theaterId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @PostMapping("/theaters")
     public ResponseEntity<HttpStatus> createTheater(@RequestBody TheaterDoc theater) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        UserDetails userDetails = (UserDetails) auth.getPrincipal();
-
-        if (userDetails.getAuthorities().stream().anyMatch(authority -> authority.getAuthority().equals("ROLE_ADMIN"))) {
-            theaterService.createTheater(theater);
-            return new ResponseEntity<>(HttpStatus.CREATED);
-        } else {
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        }
+        theaterService.createTheater(theater);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @PutMapping("/theaters")
     public ResponseEntity<TheaterDoc> updateTheater(@RequestBody TheaterDoc theater) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        UserDetails userDetails = (UserDetails) auth.getPrincipal();
-
-        if (userDetails.getAuthorities().stream().anyMatch(authority -> authority.getAuthority().equals("ROLE_ADMIN"))) {
-            TheaterDoc updatedTheater = theaterService.updateTheater(theater);
-            return new ResponseEntity<>(updatedTheater, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        }
+        TheaterDoc updatedTheater = theaterService.updateTheater(theater);
+        return new ResponseEntity<>(updatedTheater, HttpStatus.OK);
     }
 }

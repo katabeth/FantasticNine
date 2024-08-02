@@ -81,7 +81,7 @@
 <div class="container">
     <h1>Edit Theater</h1>
 
-    <form th:action="@{/theaters/update/{id}(id=${theater.theaterId})}" method="post" id="editTheaterForm">
+    <form th:action="@{/update/{id}(id=${theater.theaterId})}" method="post" id="editTheaterForm">
         <input type="hidden" name="_method" value="put"/>
 
         <h2>Location Details</h2>
