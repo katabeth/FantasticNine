@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Add Movie</title>
+    <title>Update Movie</title>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/navbarStyles.css}">
@@ -14,7 +14,7 @@
 
 <nav th:replace="~{fragments/navbar}"></nav>
 
-<form th:object="${movieDoc}" th:action="@{/movies/create}" method="post">
+<form th:object="${movieDoc}" th:action="@{/movies/update/{id}(id=${movie.getId()})}" method="post">
     <div class="table-responsive">
         <table class="table table-borderless table-sm table-custom">
             <thead>
@@ -26,75 +26,75 @@
             <tbody>
             <tr>
                 <td>Title:</td>
-                <td><input type="text" class="form-control" id="title" name="title" required></td>
+                <td><input type="text" class="form-control" id="title" name="title" required th:value="${movie.getTitle()}"></td>
             </tr>
             <tr>
                 <td>Year:</td>
-                <td><input type="text" class="form-control" id="year" name="year"></td>
+                <td><input type="text" class="form-control" id="year" name="year" th:value="${movie.getYear()}"></td>
             </tr>
             <tr>
                 <td>Plot:</td>
-                <td><input type="text" class="form-control" id="plot" name="plot"></td>
+                <td><input type="text" class="form-control" id="plot" name="plot" th:value="${movie.getPlot()}"></td>
             </tr>
             <tr>
                 <td>Full Plot:</td>
-                <td><input type="text" class="form-control" id="fullplot" name="fullplot"></td>
+                <td><input type="text" class="form-control" id="fullplot" name="fullplot" th:value="${movie.getFullplot()}"></td>
             </tr>
             <tr>
                 <td>Runtime:</td>
-                <td><input type="number" class="form-control" id="runtime" name="runtime"></td>
+                <td><input type="number" class="form-control" id="runtime" name="runtime" th:value="${movie.getRuntime()}"></td>
             </tr>
             <tr>
                 <td>Directors:</td>
-                <td><input type="text" class="form-control" id="directors" name="directors"></td>
+                <td><input type="text" class="form-control" id="directors" name="directors" th:value="${movie.getDirectors()}"></td>
             </tr>
             <tr>
                 <td>Cast:</td>
-                <td><input type="text" class="form-control" id="cast" name="cast"></td>
+                <td><input type="text" class="form-control" id="cast" name="cast" th:value="${movie.getCast()}"></td>
             </tr>
             <tr>
                 <td>Writers:</td>
-                <td><input type="text" class="form-control" id="writers" name="writers"></td>
+                <td><input type="text" class="form-control" id="writers" name="writers" th:value="${movie.getWriters()}"></td>
             </tr>
             <tr>
                 <td>Genres:</td>
-                <td><input type="text" class="form-control" id="genres" name="genres"></td>
+                <td><input type="text" class="form-control" id="genres" name="genres" th:value="${movie.getGenres()}"></td>
             </tr>
             <tr>
                 <td>Awards:</td>
-                <td><input type="text" class="form-control" id="awards" name="awards"></td>
+                <td><input type="text" class="form-control" id="awards" name="awards" th:value="${movie.getAwards()}"></td>
             </tr>
             <tr>
                 <td>IMDB:</td>
-                <td><input type="text" class="form-control" id="imdb" name="imdb"></td>
+                <td><input type="text" class="form-control" id="imdb" name="imdb" th:value="${movie.getImdb()}"></td>
             </tr>
             <tr>
                 <td>Rated:</td>
-                <td><input type="text" class="form-control" id="rated" name="rated"></td>
+                <td><input type="text" class="form-control" id="rated" name="rated" th:value="${movie.getRated()}"></td>
             </tr>
             <tr>
                 <td>Tomatoes:</td>
-                <td><input type="text" class="form-control" id="tomatoes" name="tomatoes"></td>
+                <td><input type="text" class="form-control" id="tomatoes" name="tomatoes" th:value="${movie.getTomatoes()}"></td>
             </tr>
             <tr>
                 <td>Countries:</td>
-                <td><input type="text" class="form-control" id="countries" name="countries"></td>
+                <td><input type="text" class="form-control" id="countries" name="countries" th:value="${movie.getCountries()}"></td>
             </tr>
             <tr>
                 <td>Languages:</td>
-                <td><input type="text" class="form-control" id="languages" name="languages"></td>
+                <td><input type="text" class="form-control" id="languages" name="languages" th:value="${movie.getLanguages()}"></td>
             </tr>
             <tr>
                 <td>Released:</td>
-                <td><input type="text" class="form-control" id="released" name="released"></td>
+                <td><input type="text" class="form-control" id="released" name="released" th:value="${movie.getReleased()}"></td>
             </tr>
             <tr>
                 <td>Type:</td>
-                <td><input type="text" class="form-control" id="type" name="type"></td>
+                <td><input type="text" class="form-control" id="type" name="type" th:value="${movie.getType()}"></td>
             </tr>
             <tr>
                 <td>Poster:</td>
-                <td><input type="text" class="form-control" id="poster" name="poster"></td>
+                <td><input type="text" class="form-control" id="poster" name="poster" th:value="${movie.getPoster()}"></td>
             </tr>
             </tbody>
         </table>

@@ -11,9 +11,11 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.PagedModel;
 import com.sparta.doom.fantasticninewebandapi.models.theater.TheaterDoc;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -128,20 +130,40 @@ public class MoviesWebController {
         return "redirect:/movies";
     }
 
-    @PostMapping("/update/{id}")
-    public String updateMovie(@PathVariable String id, @RequestBody MovieDoc moviesModel, Model model) {
+
+    @GetMapping("/update/{id}")
+    public String updateMovie(@PathVariable String id, Model model) {
+        MovieDoc movie = webClient
+                .get()
+                .uri("/api/movies/" + id)
+                .header("DOOM-API-KEY", key)
+                .retrieve()
+                .bodyToMono(MovieDoc.class)
+                .block();
+        model.addAttribute("movie", movie);
+        return "movies/movies_update";
+    }
+
+    @PostMapping(
+            path = "/update/{id}",
+            consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE,
+            produces = {
+                    MediaType.APPLICATION_ATOM_XML_VALUE,
+                    MediaType.APPLICATION_JSON_VALUE
+            })
+    public String updateMovie(@PathVariable String id, MultiValueMap moviesModel, Model model) {
         webClient.patch()
-                .uri("/api/movies/update" + id)
+                .uri("/api/movies/update/" + id)
                 .header("DOOM-API-KEY", key)
                 .bodyValue(moviesModel);
         model.addAttribute("movie", moviesModel);
         return "redirect:/movies/" + id;
     }
 
-    @GetMapping("/delete/{id}")
+    @PostMapping("/delete/{id}")
     public String deleteMovie(@PathVariable String id) {
         webClient.delete()
-                .uri("/api/movies/delete" + id)
+                .uri("/api/movies/delete/" + id)
                 .header("DOOM-API-KEY", key);
         return "redirect:/movies";
     }

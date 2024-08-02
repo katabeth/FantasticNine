@@ -3,6 +3,7 @@ package com.sparta.doom.fantasticninewebandapi.controllers.web;
 import com.sparta.doom.fantasticninewebandapi.security.api.JwtUtils;
 import com.sparta.doom.fantasticninewebandapi.services.SecurityService;
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +13,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -54,6 +56,26 @@ public class AuthController {
         response.addCookie(cookie);
 
         return ResponseEntity.ok(new AuthResponse(jwt));
+    }
+
+    @GetMapping("/logout")
+    public void logout(HttpServletRequest request, HttpServletResponse response) {
+        request.getSession().invalidate();
+
+        var cookies = request.getCookies();
+        if (cookies != null) {
+            for (var cookie : cookies) {
+                if ("jwt".equals(cookie.getName())) {
+                    cookie.setValue(null);
+                    cookie.setPath("/");
+                    cookie.setMaxAge(0);
+                    response.addCookie(cookie);
+                    break;
+                }
+            }
+        }
+
+        response.setStatus(HttpServletResponse.SC_OK);
     }
 
     public static class AuthRequest {
